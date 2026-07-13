@@ -1,0 +1,1 @@
+- [Expo AsyncStorage schema drift](expo-asyncstorage-schema-drift.md) — evolving a persisted data shape without a migration crashes old records; always backfill on load.

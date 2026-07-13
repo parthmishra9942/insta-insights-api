@@ -1,0 +1,84 @@
+Build me a mobile-first Instagram Analytics App (Android-focused) similar to tools like Instagram insights dashboards.
+
+CORE IDEA:
+User pastes an Instagram Reel/Post/Profile link → app fetches and displays analytics in a clean dashboard UI.
+
+INPUT:
+I have provided a reference video. Use it to match UI, layout, animations, and flow as closely as possible.
+
+MAIN FEATURES:
+
+1. LINK INPUT SYSTEM
+- A clean input box on home screen
+- User can paste any Instagram Reel/Post/Profile link
+- Add a "Analyze" button
+- Show loading animation while fetching data
+
+2. ANALYTICS DASHBOARD
+After user clicks analyze:
+Show a dashboard with:
+
+- Views
+- Likes
+- Comments
+- Shares
+- Saves
+- Engagement rate
+- Estimated reach
+
+Display data using:
+- Cards
+- Graphs (line + bar charts)
+- Clean dark UI (modern, minimal)
+
+3. EDITABLE UI (VERY IMPORTANT)
+- User can DOUBLE TAP any text or component to edit it
+- Make all text fields inline-editable
+- Smooth editing UX (no reload)
+
+4. MOBILE UI / APP EXPERIENCE
+- Must feel like a real Android app
+- Bottom navigation (Home / Analytics / Settings)
+- Smooth transitions
+- Touch-friendly buttons
+- Fast loading
+
+5. DATA HANDLING (MVP)
+- If real Instagram API is not available:
+  → simulate realistic analytics data
+- Structure data so it can later connect to real API
+
+6. VIDEO MATCHING
+- Match layout, spacing, colors, and animations from the provided video
+- Focus on making UI visually similar
+
+7. PERFORMANCE
+- Fast loading
+- Optimized for mobile screens
+- No laggy animations
+
+8. BONUS (if possible)
+- Save previous analyzed links
+- History screen
+- Export/share analytics
+
+TECH STACK:
+- Mobile-first (React Native / Flutter preferred)
+- Should be easy to convert into APK later
+- Clean component-based architecture
+
+GOAL:
+I want a working MVP that:
+- Looks premium
+- Works smoothly on Android
+- Can be monetized later
+
+IMPORTANT:
+- Keep UI very clean and modern (dark theme)
+- Focus more on UX than backend complexity
+- Make it demo-ready
+
+OUTPUT:
+- Full working app UI
+- Ready to run on mobile (Expo or Flutter)
+- Easy to customize later

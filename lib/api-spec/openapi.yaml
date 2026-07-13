@@ -1,0 +1,191 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: licenses
+    description: License key operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /licenses/generate:
+    post:
+      operationId: generateLicenses
+      tags: [licenses]
+      summary: Generate license keys
+      description: Generate one or more license keys for distribution. Requires admin secret.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LicenseGenerateRequest"
+      responses:
+        "200":
+          description: License keys generated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LicenseGenerateResponse"
+        "401":
+          description: Unauthorized
+        "400":
+          description: Invalid request
+  /licenses/activate:
+    post:
+      operationId: activateLicense
+      tags: [licenses]
+      summary: Activate a license key
+      description: Activate a license key on a device and return its validity and expiry.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LicenseActivateRequest"
+      responses:
+        "200":
+          description: License activated or already active
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LicenseActivationResponse"
+        "404":
+          description: License key not found
+        "410":
+          description: License expired or revoked
+        "400":
+          description: Invalid request
+  /licenses/validate:
+    post:
+      operationId: validateLicense
+      tags: [licenses]
+      summary: Validate a license key
+      description: Check whether a license key is currently valid without consuming it.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LicenseValidateRequest"
+      responses:
+        "200":
+          description: Validation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LicenseValidationResponse"
+        "400":
+          description: Invalid request
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    LicenseDuration:
+      type: string
+      enum:
+        - 1month
+        - lifetime
+    LicenseStatus:
+      type: string
+      enum:
+        - unused
+        - active
+        - revoked
+        - expired
+        - not_found
+    LicenseGenerateRequest:
+      type: object
+      properties:
+        count:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 1
+        duration:
+          $ref: "#/components/schemas/LicenseDuration"
+        adminSecret:
+          type: string
+      required:
+        - duration
+        - adminSecret
+    LicenseGenerateResponse:
+      type: object
+      properties:
+        keys:
+          type: array
+          items:
+            type: string
+      required:
+        - keys
+    LicenseActivateRequest:
+      type: object
+      properties:
+        key:
+          type: string
+        deviceFingerprint:
+          type: string
+      required:
+        - key
+    LicenseActivationResponse:
+      type: object
+      properties:
+        valid:
+          type: boolean
+        duration:
+          $ref: "#/components/schemas/LicenseDuration"
+        activatedAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+      required:
+        - valid
+    LicenseValidateRequest:
+      type: object
+      properties:
+        key:
+          type: string
+      required:
+        - key
+    LicenseValidationResponse:
+      type: object
+      properties:
+        valid:
+          type: boolean
+        status:
+          $ref: "#/components/schemas/LicenseStatus"
+        duration:
+          $ref: "#/components/schemas/LicenseDuration"
+        activatedAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+      required:
+        - valid

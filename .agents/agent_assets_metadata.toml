@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "mpo87FgutA-TVR2j_5VM1"
+uri = "file://insta-insights-project.zip"
+type = "unspecified"
+title = "Insta Insights Project"
