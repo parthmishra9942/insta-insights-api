@@ -4,7 +4,7 @@ console.log("auth.ts loaded");
 
 const router = Router();
 
-router.post("/auth/login", (req, res) => {
+router.post("/auth/login", (req, res): void => {
   console.log("Request body:", req.body);
   console.log("ADMIN_EMAIL:", process.env.ADMIN_EMAIL);
   console.log("ADMIN_PASSWORD:", process.env.ADMIN_PASSWORD);
@@ -15,10 +15,11 @@ router.post("/auth/login", (req, res) => {
     email !== process.env.ADMIN_EMAIL ||
     password !== process.env.ADMIN_PASSWORD
   ) {
-    return res.status(401).json({
+    res.status(401).json({
       success: false,
       message: "Invalid credentials",
     });
+    return;
   }
 
   const token = jwt.sign(
@@ -32,9 +33,10 @@ router.post("/auth/login", (req, res) => {
   );
 
   res.json({
-    success: true,
-    token,
-  });
+  success: true,
+  token,
+});
+return;
 });
 
 export default router;
