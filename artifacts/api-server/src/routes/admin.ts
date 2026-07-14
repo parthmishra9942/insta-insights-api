@@ -1,27 +1,57 @@
 import { Router, type IRouter } from "express";
 import { db, licensesTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
+import crypto from "crypto";
 
 const router: IRouter = Router();
 
 // Get all licenses
 router.get("/admin/licenses", async (_req, res) => {
   try {
-    const licenses = await db
-      .select()
-      .from(licensesTable);
-
+    const licenses = await db.select().from(licensesTable);
     res.json(licenses);
-
   } catch (err) {
     console.error(err);
-
     res.status(500).json({
       error: "Failed to fetch licenses",
     });
   }
 });
 
+// Generate a new license
+router.post("/admin/licenses/generate", async (req, res) => {
+  try {
+    const duration = req.body.duration ?? "1month";
+
+    const key =
+      "INSIGHT-" +
+      crypto.randomBytes(3).toString("hex").toUpperCase() +
+      "-" +
+      crypto.randomBytes(3).toString("hex").toUpperCase() +
+      "-" +
+      crypto.randomBytes(3).toString("hex").toUpperCase();
+
+    const [license] = await db
+      .insert(licensesTable)
+      .values({
+        key,
+        duration,
+        status: "unused",
+      })
+      .returning();
+
+    res.json({
+      success: true,
+      license,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      error: "Failed to generate license",
+    });
+  }
+});
 
 // Revoke a license
 router.patch("/admin/licenses/:id/revoke", async (req, res) => {
@@ -37,26 +67,22 @@ router.patch("/admin/licenses/:id/revoke", async (req, res) => {
       .returning();
 
     if (!updated) {
-      res.status(404).json({
+      return res.status(404).json({
         error: "License not found",
       });
-      return;
     }
 
     res.json({
       success: true,
       license: updated,
     });
-
   } catch (err) {
     console.error(err);
-
     res.status(500).json({
       error: "Failed to revoke license",
     });
   }
 });
-
 
 // View activated devices
 router.get("/admin/devices", async (_req, res) => {
@@ -71,15 +97,12 @@ router.get("/admin/devices", async (_req, res) => {
       .from(licensesTable);
 
     res.json(devices);
-
   } catch (err) {
     console.error(err);
-
     res.status(500).json({
       error: "Failed to fetch devices",
     });
   }
 });
-
 
 export default router;
