@@ -2,8 +2,11 @@ import { Router, type IRouter } from "express";
 import { db, licensesTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import crypto from "crypto";
+import { requireAdminAuth } from "../middleware/auth";
 
 const router: IRouter = Router();
+
+router.use(requireAdminAuth);
 
 // Get all licenses
 router.get("/admin/licenses", async (_req, res) => {
@@ -54,7 +57,7 @@ router.post("/admin/licenses/generate", async (req, res) => {
 });
 
 // Revoke a license
-router.patch("/admin/licenses/:id/revoke", async (req, res) => {
+router.post("/admin/licenses/:id/revoke", async (req, res) => {
   try {
     const id = Number(req.params.id);
 
